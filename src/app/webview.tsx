@@ -5,168 +5,273 @@ import {
   Linking,
   SafeAreaView,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 import {
   useLocalSearchParams,
+  useRouter,
 } from "expo-router";
 
 import { WebView } from "react-native-webview";
 
-import LoadingScreen from "../components/LoadingScreen";
-import OfflineScreen from "../components/OfflineScreen";
-
-import useInternet from "../hooks/useInternet";
-
+import LoadingScreen from "./components/LoadingScreen";
+import OfflineScreen from "./components/OfflineScreen";
+import useInternet from "./hooks/useInternet";
 
 const BASE_URL =
   "https://timiza-saas.onrender.com";
 
-
 const MODULES: Record<string, string> = {
 
+  // ============================================================
   // ADMIN
+  // ============================================================
 
-  "registration-section":
+  "admin-registration":
     "/index.html?tab=registration-section",
 
-  "student-management-section":
+  "admin-students":
     "/index.html?tab=student-management-section",
 
-  "user-management-section":
+  "admin-users":
     "/index.html?tab=user-management-section",
 
-  "accountant-section":
+  "admin-finance":
     "/index.html?tab=accountant-section",
 
-  "library-section":
+  "admin-library":
     "/index.html?tab=library-section",
 
-  "clubs-section":
+  "admin-clubs":
     "/index.html?tab=clubs-section",
 
-  "financial-analytics.html":
+  "admin-financial-analytics":
     "/financial-analytics.html",
 
-  "academic-management.html":
+  "admin-academic":
     "/academic-management.html",
 
-  "backup-section":
+  "admin-backup":
     "/index.html?tab=backup-section",
 
-  "role-management-section":
+  "admin-roles":
     "/index.html?tab=role-management-section",
 
-  "quizzes.html":
+  "admin-quizzes":
     "/quizzes.html",
 
-
+  // ============================================================
   // TEACHER
+  // ============================================================
 
-  "profile-section":
-    "/index.html?tab=profile-section",
+  "teacher-profile":
+    "/teacher.html?tab=profile-section",
 
-  "class-management-section":
-    "/index.html?tab=class-management-section",
+  "teacher-class-management":
+    "/teacher.html?tab=class-management-section",
 
-  "homework-section":
-    "/index.html?tab=homework-section",
+  "teacher-homework":
+    "/teacher.html?tab=homework-section",
 
-  "timetable-section":
-    "/index.html?tab=timetable-section",
+  "teacher-timetable":
+    "/teacher.html?tab=timetable-section",
 
-  "report-cards-section":
-    "/index.html?tab=report-cards-section",
+  "teacher-report-cards":
+    "/teacher.html?tab=reportcard-section",
 
-  "attendance-section":
-    "/index.html?tab=attendance-section",
+  "teacher-attendance":
+    "/teacher.html?tab=attendance-section",
 
-  "announcements-section":
-    "/index.html?tab=announcements-section",
+  "teacher-announcements":
+    "/teacher.html?tab=announcements-section",
 
-  "resources-section":
-    "/index.html?tab=resources-section",
+  "teacher-resources":
+    "/teacher.html?tab=resources-section",
 
-  "communication-section":
-    "/index.html?tab=communication-section",
+  "teacher-quizzes":
+    "/manage-quizzes.html",
 
+  "teacher-communication":
+    "/teacher.html?tab=communication-section",
 
+  // ============================================================
   // STUDENT
+  // ============================================================
 
-  "dashboard-section":
-    "/index.html?tab=dashboard-section",
+  "student-dashboard":
+    "/student.html?tab=dashboard-section",
 
-  "academic-calendar-section":
-    "/index.html?tab=academic-calendar-section",
+  "student-profile":
+    "/student.html?tab=profile-section",
 
-  "assignments-section":
-    "/index.html?tab=assignments-section",
+  "student-calendar":
+    "/student.html?tab=calendar-section",
 
-  "fee-records-section":
-    "/index.html?tab=fee-records-section",
+  "student-announcements":
+    "/student.html?tab=announcements-section",
 
+  "student-assignments":
+    "/student.html?tab=assignments-section",
+
+  "student-homework":
+    "/student.html?tab=homework-section",
+
+  "student-resources":
+    "/student.html?tab=resources-section",
+
+  "student-quizzes":
+    "/quizzes.html",
+
+  "student-fees":
+    "/student.html?tab=fee-records-section",
+
+  "student-library":
+    "/student.html?tab=library-section",
+
+  "student-report-cards":
+    "/student.html?tab=report-cards-section",
 };
 
+// ============================================================
+// WEBVIEW SCREEN
+// ============================================================
 
 export default function WebViewScreen() {
 
-  const webViewRef = useRef<WebView>(null);
+  const router = useRouter();
 
-  const {
-    page,
-  } = useLocalSearchParams();
+  const webViewRef =
+    useRef<WebView>(null);
 
+  const { page } =
+    useLocalSearchParams();
 
-  const [loading,setLoading] =
+  const [loading, setLoading] =
     useState(true);
-
 
   const isConnected =
     useInternet();
 
+  // ============================================================
+  // DETERMINE MODULE
+  // ============================================================
 
   const module =
     String(page || "");
-
 
   const path =
     MODULES[module] ||
     "/index.html";
 
-
   const url =
-    `${BASE_URL}${path}`;
+    BASE_URL + path;
 
+  // ============================================================
+  // EXTERNAL LINKS
+  // ============================================================
 
-
-  function handleLinks(request:any){
+  function handleLinks(request: any) {
 
     const link =
       request.url;
 
+    console.log(
+      "WEBVIEW NAVIGATION:",
+      link
+    );
 
-    if(
+    if (
       link.startsWith("tel:") ||
       link.startsWith("mailto:") ||
       link.startsWith("sms:") ||
       link.startsWith("whatsapp:") ||
       link.includes("maps.google") ||
       link.includes("play.google.com")
-    ){
+    ) {
 
-      Linking.openURL(link);
+      Linking.openURL(link).catch(
+        () => {}
+      );
 
       return false;
     }
 
-
     return true;
-
   }
 
+  // ============================================================
+  // ACTIVATE WEBSITE TAB
+  // ============================================================
 
+  function activateTab() {
 
-  if(!isConnected){
+    if (!path.includes("?tab=")) {
+      return;
+    }
+
+    const query =
+      path.split("?")[1];
+
+    const tab =
+      new URLSearchParams(query).get(
+        "tab"
+      );
+
+    if (!tab) {
+      return;
+    }
+
+    console.log(
+      "ACTIVATING TAB:",
+      tab
+    );
+
+    const script = `
+      (function () {
+
+        console.log(
+          "Timiza mobile activating tab: ${tab}"
+        );
+
+        var tabLink =
+          document.querySelector(
+            '.tab-link[data-tab="${tab}"]'
+          );
+
+        if (tabLink) {
+
+          tabLink.click();
+
+          console.log(
+            "Tab clicked: ${tab}"
+          );
+
+        } else {
+
+          console.log(
+            "Tab not found: ${tab}"
+          );
+
+        }
+
+        true;
+
+      })();
+    `;
+
+    webViewRef.current?.injectJavaScript(
+      script
+    );
+  }
+
+  // ============================================================
+  // OFFLINE
+  // ============================================================
+
+  if (!isConnected) {
 
     return (
       <OfflineScreen
@@ -175,10 +280,11 @@ export default function WebViewScreen() {
         }
       />
     );
-
   }
 
-
+  // ============================================================
+  // WEBVIEW SCREEN
+  // ============================================================
 
   return (
 
@@ -186,12 +292,48 @@ export default function WebViewScreen() {
       style={styles.container}
     >
 
+      {/* ======================================================
+          MOBILE TOP BAR
+      ======================================================= */}
+
+      <View
+        style={styles.topBar}
+      >
+
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() =>
+            router.back()
+          }
+          activeOpacity={0.8}
+        >
+
+          <Text
+            style={styles.backIcon}
+          >
+            ←
+          </Text>
+
+          <Text
+            style={styles.backText}
+          >
+            Back to Menu
+          </Text>
+
+        </TouchableOpacity>
+
+      </View>
+
+      {/* ======================================================
+          WEBVIEW
+      ======================================================= */}
+
       <WebView
 
         ref={webViewRef}
 
         source={{
-          uri:url
+          uri: url,
         }}
 
         javaScriptEnabled
@@ -207,7 +349,7 @@ export default function WebViewScreen() {
         thirdPartyCookiesEnabled
 
         originWhitelist={[
-          "*"
+          "*",
         ]}
 
         pullToRefreshEnabled
@@ -216,13 +358,19 @@ export default function WebViewScreen() {
 
         allowsBackForwardNavigationGestures
 
-        mediaPlaybackRequiresUserAction={false}
+        mediaPlaybackRequiresUserAction={
+          false
+        }
 
-        setSupportMultipleWindows={false}
+        setSupportMultipleWindows={
+          false
+        }
 
         mixedContentMode="always"
 
-        applicationNameForUserAgent="TimizaEduAnalytics"
+        applicationNameForUserAgent={
+          "TimizaEduAnalytics"
+        }
 
         androidLayerType="hardware"
 
@@ -230,24 +378,122 @@ export default function WebViewScreen() {
 
         scalesPageToFit={false}
 
+        // ======================================================
+        // NAVIGATION DEBUGGING
+        // ======================================================
+
+        onNavigationStateChange={(
+          navState
+        ) => {
+
+          console.log(
+            "WEBVIEW URL:",
+            navState.url
+          );
+
+        }}
+
+        // ======================================================
+        // REQUEST HANDLER
+        // ======================================================
+
         onShouldStartLoadWithRequest={
           handleLinks
         }
 
-        onLoadStart={() =>
-          setLoading(true)
-        }
+        // ======================================================
+        // LOADING
+        // ======================================================
 
-        onLoadEnd={() =>
-          setLoading(false)
-        }
+        onLoadStart={() => {
 
-        onError={() =>
+          console.log(
+            "WEBVIEW LOAD START"
+          );
+
+          setLoading(true);
+
+        }}
+
+        onLoadEnd={() => {
+
+          console.log(
+            "WEBVIEW LOAD END:",
+            url
+          );
+
+          setLoading(false);
+
+          // Allow website JavaScript
+          // to initialize before selecting
+          // the requested tab.
+
+          setTimeout(() => {
+
+            activateTab();
+
+          }, 500);
+
+        }}
+
+        // ======================================================
+        // WEBVIEW ERROR
+        // ======================================================
+
+        onError={(event) => {
+
+          console.log(
+            "WEBVIEW ERROR:",
+            event.nativeEvent
+          );
+
+          setLoading(false);
+
           Alert.alert(
-            "Connection Error",
-            "Unable to connect to Timiza EduAnalytics."
-          )
-        }
+            "WebView Error",
+            event.nativeEvent.description ||
+              "Unable to load the page."
+          );
+
+        }}
+
+        // ======================================================
+        // HTTP ERROR
+        // ======================================================
+
+        onHttpError={(event) => {
+
+          console.log(
+            "HTTP ERROR:",
+            event.nativeEvent.statusCode,
+            event.nativeEvent.description
+          );
+
+        }}
+
+        // ======================================================
+        // ANDROID WEBVIEW PROCESS CRASH
+        // ======================================================
+
+        onRenderProcessGone={(event) => {
+
+          console.log(
+            "ANDROID WEBVIEW PROCESS CRASHED:",
+            event.nativeEvent
+          );
+
+          setLoading(false);
+
+          Alert.alert(
+            "WebView Crashed",
+            "The Android WebView process crashed while loading this page."
+          );
+
+        }}
+
+        // ======================================================
+        // LOADING COMPONENT
+        // ======================================================
 
         renderLoading={() =>
           <LoadingScreen />
@@ -255,26 +501,92 @@ export default function WebViewScreen() {
 
       />
 
+      {/* ======================================================
+          LOADING OVERLAY
+      ======================================================= */}
 
-      {
-        loading &&
-        <LoadingScreen />
-      }
+      {loading && (
+        <View
+          style={styles.loading}
+        >
 
+          <Text
+            style={styles.loadingText}
+          >
+            Loading...
+          </Text>
+
+        </View>
+      )}
 
     </SafeAreaView>
-
   );
-
 }
 
+// ============================================================
+// STYLES
+// ============================================================
 
+const styles =
+  StyleSheet.create({
 
-const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor:
+        "#ffffff",
+    },
 
-  container:{
-    flex:1,
-    backgroundColor:"#ffffff",
-  },
+    topBar: {
+      height: 55,
+      backgroundColor:
+        "#1565C0",
+      justifyContent:
+        "center",
+      paddingHorizontal: 10,
+    },
 
-});
+    backButton: {
+      flexDirection:
+        "row",
+      alignItems:
+        "center",
+      alignSelf:
+        "flex-start",
+      paddingVertical: 8,
+      paddingHorizontal: 10,
+    },
+
+    backIcon: {
+      color: "#ffffff",
+      fontSize: 24,
+      fontWeight: "700",
+      marginRight: 6,
+    },
+
+    backText: {
+      color: "#ffffff",
+      fontSize: 16,
+      fontWeight: "700",
+    },
+
+    loading: {
+      position: "absolute",
+      top: 55,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor:
+        "#ffffff",
+      alignItems:
+        "center",
+      justifyContent:
+        "center",
+    },
+
+    loadingText: {
+      fontSize: 16,
+      color: "#555555",
+    },
+
+  });
+

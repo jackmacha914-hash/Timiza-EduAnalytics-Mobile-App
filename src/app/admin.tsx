@@ -13,67 +13,67 @@ const MENU = [
   {
     title: "Registration",
     subtitle: "Register students and staff",
-    page: "registration-section",
+    page: "admin-registration",
     icon: "📝",
   },
   {
     title: "Students",
     subtitle: "Manage student records",
-    page: "student-management-section",
+    page: "admin-students",
     icon: "🎓",
   },
   {
     title: "User Management",
     subtitle: "Manage system users",
-    page: "user-management-section",
+    page: "admin-users",
     icon: "👥",
   },
   {
     title: "Finance",
     subtitle: "Fees, payments and accounts",
-    page: "accountant-section",
+    page: "admin-finance",
     icon: "💰",
   },
   {
     title: "Library",
     subtitle: "Books and borrowing",
-    page: "library-section",
+    page: "admin-library",
     icon: "📚",
   },
   {
     title: "Clubs",
     subtitle: "Student clubs & activities",
-    page: "clubs-section",
+    page: "admin-clubs",
     icon: "🏆",
   },
   {
     title: "Financial Analytics",
     subtitle: "Financial reports",
-    page: "financial-analytics.html",
+    page: "admin-financial-analytics",
     icon: "📈",
   },
   {
     title: "Academic Management",
     subtitle: "Curriculum & academics",
-    page: "academic-management.html",
+    page: "admin-academic",
     icon: "📖",
   },
   {
     title: "Backup",
     subtitle: "Database backup",
-    page: "backup-section",
+    page: "admin-backup",
     icon: "💾",
   },
   {
     title: "Role Management",
     subtitle: "Manage permissions",
-    page: "role-management-section",
+    page: "admin-roles",
     icon: "🔐",
   },
   {
     title: "Quizzes",
     subtitle: "Online assessments",
-    page: "quizzes.html",
+    page: "admin-quizzes",
     icon: "❓",
   },
 ];
@@ -83,8 +83,11 @@ export default function AdminScreen() {
 
   let greeting = "Good Evening";
 
-  if (hour < 12) greeting = "Good Morning";
-  else if (hour < 17) greeting = "Good Afternoon";
+  if (hour < 12) {
+    greeting = "Good Morning";
+  } else if (hour < 17) {
+    greeting = "Good Afternoon";
+  }
 
   function openModule(page: string) {
     router.push({
@@ -127,6 +130,7 @@ export default function AdminScreen() {
             <TouchableOpacity
               key={item.title}
               style={styles.card}
+              activeOpacity={0.75}
               onPress={() =>
                 openModule(item.page)
               }
@@ -140,9 +144,7 @@ export default function AdminScreen() {
                   {item.title}
                 </Text>
 
-                <Text
-                  style={styles.cardSubtitle}
-                >
+                <Text style={styles.cardSubtitle}>
                   {item.subtitle}
                 </Text>
               </View>
@@ -155,6 +157,10 @@ export default function AdminScreen() {
 
           <TouchableOpacity
             style={styles.logout}
+            activeOpacity={0.8}
+            onPress={() =>
+              router.replace("/login")
+            }
           >
             <Text style={styles.logoutText}>
               Logout
@@ -171,7 +177,6 @@ export default function AdminScreen() {
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: "#F5F7FA",
@@ -276,5 +281,4 @@ const styles = StyleSheet.create({
     marginVertical: 25,
     color: "#888",
   },
-
 });
