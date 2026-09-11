@@ -35,6 +35,24 @@ const MENU = [
     icon: "💰",
   },
   {
+    title: "Meals & Collections",
+    subtitle: "Manage meals and collections",
+    page: "admin-meals-collections",
+    icon: "🍽️",
+  },
+  {
+    title: "Attendance",
+    subtitle: "Track student attendance",
+    page: "admin-attendance",
+    icon: "✅",
+  },
+  {
+    title: "Transport",
+    subtitle: "Manage school transport",
+    page: "admin-transport",
+    icon: "🚌",
+  },
+  {
     title: "Library",
     subtitle: "Books and borrowing",
     page: "admin-library",

@@ -23,7 +23,7 @@ export default function DownloadOverlay() {
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: "rgba(255,255,255,.95)",
     justifyContent: "center",
     alignItems: "center",

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Timiza EduAnalytics",
     "slug": "timiza-eduanalytics",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "timiza",
@@ -12,6 +12,7 @@
     ],
     "android": {
       "package": "com.timizaanalytics.eduanalytics",
+      "versionCode": 8,
       "permissions": [
         "INTERNET"
       ],
@@ -39,9 +40,11 @@
       "expo-secure-store"
     ],
     "extra": {
+      "router": {},
       "eas": {
-        "projectId": "da57d739-844e-4456-a046-c3f9a96f13ae"
+        "projectId": "64d36646-e731-41ab-aca6-0215c17bdc53"
       }
-    }
+    },
+    "owner": "timishop"
   }
 }

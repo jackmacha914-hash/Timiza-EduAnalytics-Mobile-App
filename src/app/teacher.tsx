@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
 import { router } from "expo-router";
 
 const MENU = [
@@ -72,7 +73,7 @@ const MENU = [
   },
 ];
 
-export default function AdminScreen() {
+export default function TeacherScreen() {
   const hour = new Date().getHours();
 
   let greeting = "Good Evening";
@@ -87,16 +88,14 @@ export default function AdminScreen() {
     router.push({
       pathname: "/webview",
       params: {
-        page,
+        page: page,
       },
     });
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Text style={styles.greeting}>
             {greeting}
@@ -122,12 +121,10 @@ export default function AdminScreen() {
 
           {MENU.map((item) => (
             <TouchableOpacity
-              key={item.title}
+              key={item.page}
               style={styles.card}
               activeOpacity={0.75}
-              onPress={() =>
-                openModule(item.page)
-              }
+              onPress={() => openModule(item.page)}
             >
               <Text style={styles.icon}>
                 {item.icon}
@@ -152,9 +149,7 @@ export default function AdminScreen() {
           <TouchableOpacity
             style={styles.logout}
             activeOpacity={0.8}
-            onPress={() =>
-              router.replace("/login")
-            }
+            onPress={() => router.replace("/login")}
           >
             <Text style={styles.logoutText}>
               Logout
@@ -276,3 +271,4 @@ const styles = StyleSheet.create({
     color: "#888",
   },
 });
+
